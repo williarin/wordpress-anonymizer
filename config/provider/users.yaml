@@ -1,0 +1,6 @@
+user_login: userName
+user_pass: sha256
+user_nicename: userName
+user_email: email
+user_url: url
+display_name: name

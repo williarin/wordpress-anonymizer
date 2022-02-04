@@ -1,0 +1,33 @@
+parameters:
+    env(TABLE_PREFIX): wp_
+    database_url: '%env(resolve:DATABASE_URL)%'
+    table_prefix: '%env(resolve:TABLE_PREFIX)%'
+
+services:
+    _instanceof:
+        Symfony\Component\Console\Command\Command:
+            tags: [ 'command' ]
+        Williarin\WordpressAnonymizer\Provider\AnonymizerProviderInterface:
+            tags: [ 'anonymizer_provider' ]
+
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: true
+        bind:
+            iterable $commands: !tagged 'command'
+            iterable $providers: !tagged 'anonymizer_provider'
+            string $tablePrefix: '%table_prefix%'
+
+    Williarin\WordpressAnonymizer\:
+        resource: '../src/'
+
+    Doctrine\DBAL\Connection:
+        class: Doctrine\DBAL\Connection
+        factory: ['Doctrine\DBAL\DriverManager', 'getConnection']
+        arguments:
+            - { url: '%database_url%' }
+
+    Faker\Generator:
+        class: Faker\Generator
+        factory: ['Faker\Factory', 'create']

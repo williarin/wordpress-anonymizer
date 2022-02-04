@@ -1,0 +1,31 @@
+_billing_first_name: firstName
+_billing_last_name: lastName
+_billing_company: company
+_billing_address_1: streetAddress
+_billing_address_2: secondaryAddress
+_billing_city: city
+_billing_postcode: postcode
+_billing_state: state
+_billing_country: countryCode
+_billing_email: email
+_billing_phone: phoneNumber
+_shipping_first_name: firstName
+_shipping_last_name: lastName
+_shipping_company: company
+_shipping_address_1: streetAddress
+_shipping_address_2: secondaryAddress
+_shipping_city: city
+_shipping_postcode: postcode
+_shipping_state: state
+_shipping_country: countryCode
+_stripe_customer_id: ean13
+_customer_ip_address: ipv4
+payer_paypal_address:
+    name: Payer PayPal address
+    type: email
+payer_first_name:
+    name: Payer first name
+    type: firstName
+payer_last_name:
+    name: Payer last name
+    type: lastName

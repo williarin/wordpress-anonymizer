@@ -1,0 +1,22 @@
+<?php
+
+declare(strict_types=1);
+
+require __DIR__.'/../vendor/autoload.php';
+
+use Williarin\WordpressAnonymizer\Console\Application;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\Dotenv\Dotenv;
+
+if (method_exists(Dotenv::class, 'bootEnv')) {
+    (new Dotenv())->usePutenv()->bootEnv(dirname(__DIR__) . '/.env');
+}
+
+$containerBuilder = new ContainerBuilder();
+$loader = new YamlFileLoader($containerBuilder, new FileLocator(__DIR__));
+$loader->load(__DIR__ . '/../config/services.yaml');
+$containerBuilder->compile(true);
+
+exit($containerBuilder->get(Application::class)->run());

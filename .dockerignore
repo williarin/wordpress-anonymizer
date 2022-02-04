@@ -1,0 +1,16 @@
+**/.git
+**/.github
+**/.idea
+**/test
+
+**/.gitignore
+**/*.lock
+**/*.cache
+**/*.dist
+**/*.md
+**/*.local
+**/.dockerignore
+**/docker-compose.*
+**/Dockerfile
+**/ecs.php
+**/Makefile

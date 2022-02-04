@@ -1,0 +1,62 @@
+name: Build Docker image
+
+on:
+    push:
+        tags:
+            - '**'
+
+jobs:
+    build:
+        name: Build Docker image
+
+        runs-on: ubuntu-20.04
+
+        steps:
+            -   uses: actions/checkout@v2
+
+            -   uses: FranzDiebold/github-env-vars-action@v2
+
+            -   name: Setup PHP
+                id: setup-php
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: '8.0'
+                    extensions: dom, curl, libxml, mbstring, zip
+                    tools: composer:v2
+
+            -   name: Validate composer.json and composer.lock
+                run: composer validate
+
+            -   name: Get composer cache directory
+                id: composer-cache
+                run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+            -   name: Cache dependencies
+                uses: actions/cache@v2
+                with:
+                    path: ${{ steps.composer-cache.outputs.dir }}
+                    key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+                    restore-keys: ${{ runner.os }}-composer-
+
+            -   name: Install composer dependencies
+                run: composer install --prefer-dist --no-dev --no-progress --no-scripts --no-interaction
+
+            -   name: Set major tag name
+                run: echo "TAG_MAJOR=$(echo $CI_REF_NAME | cut -d. -f1)" >> $GITHUB_ENV
+
+            -   name: Set major tag name
+                run: echo "TAG_MINOR=${{ env.TAG_MAJOR }}.$(echo $CI_REF_NAME | cut -d. -f2)" >> $GITHUB_ENV
+
+            -   name: Build Docker image
+                run: |
+                    docker build -t williarin/wordpress-anonymizer:latest .
+                    docker tag williarin/wordpress-anonymizer:latest williarin/wordpress-anonymizer:$CI_REF_NAME
+                    docker tag williarin/wordpress-anonymizer:latest williarin/wordpress-anonymizer:${{ env.TAG_MAJOR }}
+                    docker tag williarin/wordpress-anonymizer:latest williarin/wordpress-anonymizer:${{ env.TAG_MINOR }}
+
+            -   name: Login to registry
+                run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+            -   name: Push Docker image
+                run: |
+                    docker push --all-tags williarin/wordpress-anonymizer
