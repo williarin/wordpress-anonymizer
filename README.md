@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This repository may be used as a third-party library or as a standalone Docker application.
+This repository can be used as a third party library or as a standalone Docker application.
 
 The main use case is to anonymize a database filled with user and customer data before committing it to a VCS repository.
 It will anonymize both WordPress base data and WooCommerce data. 
@@ -20,9 +20,17 @@ docker run --rm \
     williarin/wordpress-anonymizer
 ```
 
+Variables:
+
+| Variable       | Description                         | Default                                                                      |
+|----------------|-------------------------------------|------------------------------------------------------------------------------|
+| `DATABASE_URL` | The database url to connect to.     | `mysql://test:test@127.0.0.1:6033/wp_test?serverVersion=8.0&charset=utf8mb4` |
+| `TABLE_PREFIX` | The table prefix used by WordPress. | `wp_`                                                                        |
+
+
 ## Installation as a library in your project
 
-This library can be used as standalone:
+To integrate this library to your project, install it with Composer:
 ```bash
 composer require williarin/wordpress-anonymizer
 ```
