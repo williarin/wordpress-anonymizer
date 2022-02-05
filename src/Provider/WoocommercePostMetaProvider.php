@@ -8,7 +8,7 @@ use Symfony\Component\Yaml\Yaml;
 
 final class WoocommercePostMetaProvider extends AbstractAnonymizerProvider
 {
-    public function anonymize(): void
+    public function anonymize(bool $useTransactions = true): void
     {
         $queryBuilder = $this->connection->createQueryBuilder()
             ->select('post_id')
@@ -30,7 +30,7 @@ final class WoocommercePostMetaProvider extends AbstractAnonymizerProvider
 
         $postMeta = $queryBuilder->executeQuery();
 
-        $this->replaceMetaValues($postMeta, 'postmeta', 'post_id');
+        $this->replaceMetaValues($useTransactions, $postMeta, 'postmeta', 'post_id');
     }
 
     protected function load(): void

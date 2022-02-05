@@ -16,10 +16,10 @@ final class Anonymizer
     ) {
     }
 
-    public function anonymize(): void
+    public function anonymize(bool $useTransactions = true): void
     {
         foreach ($this->providers as $provider) {
-            $provider->anonymize();
+            $provider->anonymize($useTransactions);
         }
     }
 }

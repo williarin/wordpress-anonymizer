@@ -23,8 +23,16 @@ abstract class AbstractAnonymizerProvider implements AnonymizerProviderInterface
 
     abstract protected function load(): void;
 
-    protected function replaceValues(Result $rows, string $tableName, string $idFieldName = 'ID'): void
-    {
+    protected function replaceValues(
+        bool $useTransactions,
+        Result $rows,
+        string $tableName,
+        string $idFieldName = 'ID'
+    ): void {
+        if ($useTransactions) {
+            $this->connection->beginTransaction();
+        }
+
         while (($row = $rows->fetchAssociative()) !== false) {
             foreach ($row as $key => $value) {
                 if (!array_key_exists($key, $this->data)) {
@@ -45,10 +53,28 @@ abstract class AbstractAnonymizerProvider implements AnonymizerProviderInterface
                 ;
             }
         }
+
+        if ($useTransactions) {
+            try {
+                $this->connection->commit();
+            } catch (\Exception $e) {
+                $this->connection->rollBack();
+
+                throw $e;
+            }
+        }
     }
 
-    protected function replaceMetaValues(Result $rows, string $tableName, string $idFieldName): void
-    {
+    protected function replaceMetaValues(
+        bool $useTransactions,
+        Result $rows,
+        string $tableName,
+        string $idFieldName
+    ): void {
+        if ($useTransactions) {
+            $this->connection->beginTransaction();
+        }
+
         while (($row = $rows->fetchAssociative()) !== false) {
             foreach ($row as $key => $value) {
                 if (!array_key_exists($key, $this->data)) {
@@ -69,6 +95,16 @@ abstract class AbstractAnonymizerProvider implements AnonymizerProviderInterface
                     ])
                     ->executeStatement()
                 ;
+            }
+        }
+
+        if ($useTransactions) {
+            try {
+                $this->connection->commit();
+            } catch (\Exception $e) {
+                $this->connection->rollBack();
+
+                throw $e;
             }
         }
     }

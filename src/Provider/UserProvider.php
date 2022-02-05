@@ -8,7 +8,7 @@ use Symfony\Component\Yaml\Yaml;
 
 final class UserProvider extends AbstractAnonymizerProvider
 {
-    public function anonymize(): void
+    public function anonymize(bool $useTransactions = true): void
     {
         $users = $this->connection->createQueryBuilder()
             ->select('ID', ...array_keys($this->data))
@@ -16,7 +16,7 @@ final class UserProvider extends AbstractAnonymizerProvider
             ->executeQuery()
         ;
 
-        $this->replaceValues($users, 'users');
+        $this->replaceValues($useTransactions, $users, 'users');
     }
 
     protected function load(): void

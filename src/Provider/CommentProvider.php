@@ -8,7 +8,7 @@ use Symfony\Component\Yaml\Yaml;
 
 final class CommentProvider extends AbstractAnonymizerProvider
 {
-    public function anonymize(): void
+    public function anonymize(bool $useTransactions = true): void
     {
         $comments = $this->connection->createQueryBuilder()
             ->select('comment_ID', ...array_keys($this->data))
@@ -16,7 +16,7 @@ final class CommentProvider extends AbstractAnonymizerProvider
             ->executeQuery()
         ;
 
-        $this->replaceValues($comments, 'comments', 'comment_ID');
+        $this->replaceValues($useTransactions, $comments, 'comments', 'comment_ID');
     }
 
     protected function load(): void

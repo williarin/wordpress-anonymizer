@@ -6,5 +6,5 @@ namespace Williarin\WordpressAnonymizer\Provider;
 
 interface AnonymizerProviderInterface
 {
-    public function anonymize(): void;
+    public function anonymize(bool $useTransactions = true): void;
 }

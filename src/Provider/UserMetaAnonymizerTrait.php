@@ -12,11 +12,11 @@ use Doctrine\DBAL\Result;
  * @property string     $tablePrefix
  * @property string[]   $data
  *
- * @method void replaceMetaValues(Result $rows, string $tableName, string $idFieldName)
+ * @method void replaceMetaValues(bool $useTransactions, Result $rows, string $tableName, string $idFieldName)
  */
 trait UserMetaAnonymizerTrait
 {
-    public function anonymize(): void
+    public function anonymize(bool $useTransactions = true): void
     {
         $queryBuilder = $this->connection->createQueryBuilder()
             ->select('user_id')
@@ -36,6 +36,6 @@ trait UserMetaAnonymizerTrait
 
         $userMeta = $queryBuilder->executeQuery();
 
-        $this->replaceMetaValues($userMeta, 'usermeta', 'user_id');
+        $this->replaceMetaValues($useTransactions, $userMeta, 'usermeta', 'user_id');
     }
 }
